@@ -1,0 +1,112 @@
+import java.io.File; 
+import java.io.FileNotFoundException; // Import this class to handle errors
+import java.util.Scanner; // Import the Scanner class to read text files
+import java.util.ArrayList;
+
+public class RealEstateAnalyticProgram {
+
+	public static void main(String[] args) {
+		ReportManager.createDataObjects(ReportManager.inputTextFile());
+	}
+}
+
+class RealEstateRecord {
+	String HouseType;
+	String Description;
+	String SoldPrice;
+	String StreetName;
+	String StNumber;
+	String NumBedrooms;
+	String NumBedPlus;
+	String NumBaths;
+	String Basement1;
+}
+
+class ReportManager {
+	public static int LineNumber = 2;
+	public static ArrayList<String> dataLines = new ArrayList<String>();
+	public static ArrayList<RealEstateRecord> realEstateDataRecords = new ArrayList<RealEstateRecord>();
+
+	static String oneLine;
+	static RealEstateRecord oneRecord;
+
+	public static void createDataObjects(ArrayList<String> dataLines) {
+
+		// 1. we will walk over the dataLines ArrayList
+		// 2. we will use SUBSTRING to the line apart
+		// we will pull the line apart using substring
+		// For each little bit of the string: we assign to a field in the
+		// RealEstateRecord OBJECT
+
+		char currentElement;
+		int begin = 0;
+		int end = 0;
+		int pos = 0;
+		try {
+			for (int i = 1; i < dataLines.size(); i++) {
+				System.out.println("Line Number " + LineNumber++);
+				oneRecord = new RealEstateRecord();
+				oneLine = dataLines.get(i);
+				System.out.println("*** " + oneLine);
+				try {
+					for (pos = 0; pos < oneLine.length(); pos++) {
+						currentElement = oneLine.charAt(pos);
+						
+						if (currentElement == ',') {
+							System.out.println(" , found at pos " + pos);
+							end = pos;
+							System.out.println("Begin / End ");
+							System.out.println(begin + "  " + end);
+							oneRecord.HouseType = oneLine.substring(begin, end);
+							System.out.println(oneRecord.HouseType);
+							break;
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				for (; pos < oneLine.length(); pos++) {
+					begin = end;
+					currentElement = oneLine.charAt(pos);
+					if (currentElement == ',') {
+						end = pos + 1;
+						oneRecord.Description = oneLine.substring(begin, end);
+						break;
+					}
+				}
+
+//			oneRecord.SoldPrice = 
+//			oneRecord.StreetName = 
+//			oneRecord.StNumber = 
+//			oneRecord.NumBedrooms = 
+//			oneRecord.NumBedPlus = 
+//			oneRecord.NumBaths = 
+//			oneRecord.Basement1 = 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		realEstateDataRecords.add(oneRecord);
+	}
+
+	public static ArrayList<String> inputTextFile() {
+		try {
+			File myObj = new File("C:\\realestatedata\\RealEstateData.csv");
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				String data = myReader.nextLine();
+				// System.out.println(data);
+				// put each line of data into an ARRAYLIST
+				dataLines.add(data);
+			}
+			myReader.close();
+		} catch (Exception e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		return dataLines;
+	}
+
+}
